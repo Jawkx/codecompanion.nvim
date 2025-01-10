@@ -84,6 +84,7 @@ function UI:open()
     relative = window.relative,
     width = width,
     height = height,
+    size = "30%",
     row = window.row or math.floor((vim.o.lines - height) / 2),
     col = window.col or math.floor((vim.o.columns - width) / 2),
     border = window.border,

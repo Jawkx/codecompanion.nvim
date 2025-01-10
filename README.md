@@ -68,6 +68,7 @@ Install the plugin with your preferred package manager:
   dependencies = {
     "nvim-lua/plenary.nvim",
     "nvim-treesitter/nvim-treesitter",
+    "MunifTanjim/nui.nvim"
   },
   config = true
 }

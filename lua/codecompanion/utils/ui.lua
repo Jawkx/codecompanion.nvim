@@ -21,13 +21,13 @@ M.create_float = function(lines, opts)
 
   local popup = nui({
     border = { style = "single" },
-    position = "50%",
+    position = "right",
     size = {
       width = "80%",
       height = height,
     },
     bufnr = bufnr,
-    relative = opts.relative or "editor",
+    relative = "editor",
     anchor = opts.anchor or "NW",
     x = 1,
     y = 1,

@@ -4,10 +4,12 @@ local api = vim.api
 
 local M = {}
 
+local nui = require("nui.popup")
+
 ---Open a floating window with the provided lines
 ---@param lines table
 ---@param opts table
----@return number,number The buffer and window numbers
+---@return table The nui popup object
 M.create_float = function(lines, opts)
   local window = opts.window
   local width = window.width > 1 and window.width or opts.width or 85
@@ -17,17 +19,30 @@ M.create_float = function(lines, opts)
 
   require("codecompanion.utils").set_option(bufnr, "filetype", opts.filetype or "codecompanion")
 
-  local winnr = api.nvim_open_win(bufnr, true, {
-    relative = opts.relative or "cursor",
-    border = "single",
-    width = width,
-    height = height,
-    style = "minimal",
-    row = 10,
-    col = 0,
-    title = opts.title or "Options",
-    title_pos = "center",
+  local popup = nui({
+    border = { style = "single" },
+    position = "50%",
+    size = {
+      width = width,
+      height = height,
+    },
+    bufnr = bufnr,
+    relative = opts.relative or "editor",
+    anchor = opts.anchor or "NW",
+    x = 1,
+    y = 1,
+    title = {
+      text = opts.title or "Options",
+      pos = "center",
+    },
+    zindex = 50,
+  }, {
+    enter = true,
   })
+
+  popup:on("exit", function()
+    api.nvim_buf_delete(bufnr, { force = true })
+  end)
 
   api.nvim_buf_set_lines(bufnr, 0, -1, false, lines)
 
@@ -37,21 +52,10 @@ M.create_float = function(lines, opts)
   end
 
   if opts.opts then
-    M.set_win_options(winnr, opts.opts)
+    M.set_win_options(popup.winnr, opts.opts)
   end
-
-  if opts.ignore_keymaps then
-    return bufnr, winnr
-  end
-
-  local function close()
-    api.nvim_buf_delete(bufnr, { force = true })
-  end
-
-  vim.keymap.set("n", "q", close, { buffer = bufnr })
-  vim.keymap.set("n", "<ESC>", close, { buffer = bufnr })
-
-  return bufnr, winnr
+  popup:mount()
+  return popup
 end
 
 ---@param bufnr number

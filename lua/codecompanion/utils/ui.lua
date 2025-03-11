@@ -12,8 +12,19 @@ local nui = require("nui.popup")
 ---@return table The nui popup object
 M.create_float = function(lines, opts)
   local window = opts.window
-  local width = window.width > 1 and window.width or opts.width or 85
-  local height = window.height > 1 and window.height or opts.height or 17
+  local width = opts.width or 50
+  local height = opts.height or 17
+
+  if opts.width and opts.width < 1 then
+    width = vim.o.columns * opts.width
+  end
+
+  if opts.height and opts.height < 1 then
+    height = M.get_editor_height() * opts.height
+  end
+
+  width = window.width > 1 and window.width or width
+  height = window.height > 1 and window.height or height
 
   local bufnr = opts.bufnr or api.nvim_create_buf(false, true)
 

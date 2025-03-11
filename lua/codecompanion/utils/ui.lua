@@ -23,7 +23,7 @@ M.create_float = function(lines, opts)
     border = { style = "single" },
     position = "50%",
     size = {
-      width = width,
+      width = "80%",
       height = height,
     },
     bufnr = bufnr,
